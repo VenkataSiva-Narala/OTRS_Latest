@@ -17,7 +17,7 @@ RUN npm install
 # Copy the rest of the application files
 
 COPY . .
- 
+ RUN npm install -g typescript
 # Build the React application for production
 
 RUN npm run build
