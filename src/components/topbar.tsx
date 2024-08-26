@@ -11,9 +11,21 @@ import {
 } from "@/components/ui/popover";
 import { ModeToggle } from "./mode-toggle";
 import { toast } from "./ui/use-toast";
+import { useState, useEffect } from "react";
+
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 const TopBar = () => {
+  const [username, setUsername] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUsername =localStorage.getItem("username");
+    if (storedUsername) {
+      setUsername(capitalizeFirstLetter(storedUsername));    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -36,6 +48,7 @@ const TopBar = () => {
       </Link>
 
       <div className="flex gap-4 items-center">
+      <p className="text-md font-semibold">Hello {username}</p> 
         <ModeToggle />
         <Popover>
           <PopoverTrigger asChild>

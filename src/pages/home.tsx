@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, } from "react";
 
 import { columns } from "@/components/tickets-table/columns";
 import { DataTable } from "@/components/tickets-table/data-table";

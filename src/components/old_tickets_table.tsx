@@ -99,7 +99,6 @@ function App() {
   const [data, _setData] = React.useState<Tickets[]>([]);
   const [density, setDensity] = React.useState<DensityState>("md");
   const [clicked, setClicked] = useState<{ [key: string]: boolean }>({});
-  const [Pick, setPick] = useState(false);
   const navigate = useNavigate();
   const columns = React.useMemo<ColumnDef<Tickets>[]>(
     () => [
@@ -236,7 +235,6 @@ function App() {
 
       setPickupStatus((prev) => ({ ...prev, [id]: response.data.msg }));
       setClicked((prev) => ({ ...prev, [id]: true }));
-      setPick(false);
     } catch (error) {
       console.log(error);
     }
@@ -247,8 +245,9 @@ function App() {
       const response = await getTickets();
       _setData(response.data.ticketId);
       console.log(response.data);
-      response.data.ticketId.map((value, index) => {
-        setPick(value.canPick);
+      response.data.ticketId.map((value: any) => {
+        console.log(value);
+        
       });
     } catch (error) {
       console.log(error);

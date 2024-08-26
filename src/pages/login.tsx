@@ -46,6 +46,7 @@ const Login = () => {
       setUsername(values.username);
       setId(response.data.uniqueId);
       setOtpValidate(true);
+      localStorage.setItem("username", values.username);
       toast({
         title: "Authentication",
         description: "OTP has been sent.",

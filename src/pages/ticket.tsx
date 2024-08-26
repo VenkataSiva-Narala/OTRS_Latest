@@ -58,19 +58,19 @@ import {
 } from "lucide-react";
 import TicketHeader from "@/components/ticket/ticket-header";
 
-const headerFields: string[] = [
-  "ticket_id",
-  "customer_id",
-  "title",
-  "type",
-  "breach_status",
-  "bucket",
-  "raised_by_id",
-  "raised_at",
-  "severity",
-  "sla_due",
-  "status",
-];
+// const headerFields: string[] = [
+//   "ticket_id",
+//   "customer_id",
+//   "title",
+//   "type",
+//   "breach_status",
+//   "bucket",
+//   "raised_by_id",
+//   "raised_at",
+//   "severity",
+//   "sla_due",
+//   "status",
+// ];
 
 const Ticket = () => {
   const { toast } = useToast();

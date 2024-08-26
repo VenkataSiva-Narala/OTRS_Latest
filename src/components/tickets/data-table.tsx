@@ -223,8 +223,8 @@ export function DataTable<TData, TValue>({
       />
 
       <FilterSheet
-        sheetState={filterSheetState}
-        setSheetState={() => setFilterSheetState(!filterSheetState)}
+        dialogState={filterSheetState}
+        setDialogState={() => setFilterSheetState(!filterSheetState)}
       />
     </>
   );

@@ -58,16 +58,16 @@ const formSchema = z.object({
 });
 
 interface FilterSheetProps {
-  sheetState: boolean;
-  setSheetState: () => void;
+  dialogState: boolean;
+  setDialogState: () => void;
 }
 
 const FilterDialog: React.FC<FilterSheetProps> = ({
-  setSheetState,
-  sheetState,
+  dialogState,
+  setDialogState,
 }) => {
   const setTickets = useSetAtom(ticketsAtom);
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<{ customer_id: number; customer_name: string }[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -89,22 +89,30 @@ const FilterDialog: React.FC<FilterSheetProps> = ({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const cleanedValues: { [key: string]: string | Date } =
+      const cleanedValues: { [key: string]: string | number | Date } =
         Object.fromEntries(
           Object.entries(values)
             .filter(
-              ([key, value]) =>
-                value !== "" && value !== null && value !== undefined
+              ([key, value]) =>{
+               if( value !== "" && value !== null && value !== undefined){
+                console.log(key);
+                
+               }
+              }
             )
             .map(([key, value]) => {
               if (key === "start_date" || key === "end_date") {
                 return [key, format(new Date(value), "yyyy-MM-dd")];
               }
+              if (key === "customer_id") {
+                return [key, parseInt(value as string)];
+              }
               return [key, value];
             })
         );
       const response = await filterTickets(cleanedValues);
-      setTickets(response.data.tickets)
+      setTickets(response.data.tickets);
+      setDialogState();
     } catch (error) {
       console.error(error);
     }
@@ -113,7 +121,15 @@ const FilterDialog: React.FC<FilterSheetProps> = ({
   async function handleFetchCustomers() {
     try {
       const response = await getCustomerDetails();
-      setCustomers(response.data.customers);
+      console.log("getCustomerDetails",response.data.customer);
+      if (Array.isArray(response.data.customer)) {
+        setCustomers(response.data.customer);
+      } else if (response.data.customer && typeof response.data.customer === 'object') {
+        setCustomers([response.data.customer]);
+      }else {
+        console.error("Unexpected data format:", response.data.customer);
+      }
+      // setCustomers(response?.data?.customer);
     } catch (error) {
       //add toast
     }
@@ -124,7 +140,7 @@ const FilterDialog: React.FC<FilterSheetProps> = ({
   }, []);
 
   return (
-    <Dialog open={sheetState} onOpenChange={setSheetState}>
+    <Dialog open={dialogState} onOpenChange={setDialogState}>
       <DialogContent className="max-w-[1000px]">
         <DialogHeader>
           <DialogTitle>Filters</DialogTitle>
@@ -161,7 +177,7 @@ const FilterDialog: React.FC<FilterSheetProps> = ({
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 min-w-[250px]" align="start">
                           <Calendar
                             mode="single"
                             selected={field.value}
@@ -200,7 +216,7 @@ const FilterDialog: React.FC<FilterSheetProps> = ({
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 min-w-[250px]" align="start">
                           <Calendar
                             mode="single"
                             selected={field.value}
@@ -324,7 +340,7 @@ const FilterDialog: React.FC<FilterSheetProps> = ({
                           {customers.map((user) => (
                             <SelectItem
                               key={user.customer_id}
-                              value={user.customer_id}
+                              value={user.customer_id.toString()}
                             >
                               {user.customer_id}
                             </SelectItem>
